@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>disable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\obenprime-netsuite-bss-svc\obenprime-netsuite-bss-svc\obenprime-netsuite-bss-svc.csproj" />
+    <ProjectReference Include="..\Model\Model.csproj" />
+    <ProjectReference Include="..\UnitOfWork_Interface\UnitOfWork_Interface.csproj" />
+  </ItemGroup>
+
+</Project>
