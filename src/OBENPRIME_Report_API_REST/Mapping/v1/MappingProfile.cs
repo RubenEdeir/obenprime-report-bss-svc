@@ -11,6 +11,18 @@ public class MappingProfile : Profile
         CreateMap<DTO_Netsuite_Filtro, Ent_Netsuite_Filtro>();
         CreateMap<DTO_Auditoria, Ent_Auditoria>();
 
+        CreateMap<Ent_Netsuite_Api_Response, DTO_Netsuite_Response>()
+            .ForMember(destino => destino.Offset,
+            opt => opt.MapFrom(origen => origen.Offset))
+            .ForMember(destino => destino.HasMore,
+            opt => opt.MapFrom(origen => origen.HasMore))
+            .ForMember(destino => destino.Count,
+            opt => opt.MapFrom(origen => origen.Count))
+            .ForMember(destino => destino.TotalResults,
+            opt => opt.MapFrom(origen => origen.TotalResults))
+            .ForMember(destino => destino.Data,
+            opt => opt.MapFrom(origen => origen.Data));
+
         CreateMap<Ent_Netsuite, DTO_Netsuite>()
             .ForMember(destino => destino.lote,
             opt => opt.MapFrom(origen => origen.lot))

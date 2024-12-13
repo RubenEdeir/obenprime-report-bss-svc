@@ -22,7 +22,17 @@
         public string Message { get; set; }
     }
 
-    public class Ent_Netsuite_Api_Response : Ent_Header_Response_Netsuite
+    public class Ent_Header_Response_Netsuite_Plus
+    {
+        public bool IsSuccessful { get; set; }
+        public string Message { get; set; }
+        public bool HasMore { get; set; }
+        public int Count { get; set; }
+        public int Offset { get; set; }
+        public int TotalResults { get; set; }
+    }
+
+    public class Ent_Netsuite_Api_Response : Ent_Header_Response_Netsuite_Plus
     {
         public List<Ent_Netsuite> Data { get; set; }
     }

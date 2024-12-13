@@ -17,6 +17,19 @@
         }
     }
 
+    public class DTO_Paginacion_Ns
+    {
+        public bool HasMore { get; set; }
+        public int Count { get; set; }
+        public int Offset { get; set; }
+        public int TotalResults { get; set; }
+    }
+
+    public class DTO_Netsuite_Response : DTO_Paginacion_Ns
+    {
+        public List<DTO_Netsuite> Data { get; set; }
+    }
+
     public class DTO_Netsuite_Filtro
     {
         public DateOnly fecha_inicio { get; set; }
