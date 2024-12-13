@@ -10,7 +10,7 @@ namespace Service
 {
     public interface INetsuiteService
     {
-        Task<List<Ent_Netsuite>> GetReporteNetsuite(Ent_Netsuite_Filtro oClass);
+        Task<Ent_Netsuite_Api_Response> GetReporteNetsuite(Ent_Netsuite_Filtro oClass);
         Task<List<Ent_Generico>> GetAlmacenNetsuite(Ent_Auditoria oClass);
     }
 
@@ -22,11 +22,11 @@ namespace Service
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<List<Ent_Netsuite>> GetReporteNetsuite(Ent_Netsuite_Filtro oClass)
+        public async Task<Ent_Netsuite_Api_Response> GetReporteNetsuite(Ent_Netsuite_Filtro oClass)
         {
             using var context = _unitOfWork.Create();
             var lo_token = await context.Repositories.HelperRepository.ObtenerToken("NetSuite");
-            List<Ent_Netsuite> lo_lista = new List<Ent_Netsuite>();
+            Ent_Netsuite_Api_Response lo_entidad = new Ent_Netsuite_Api_Response();
 
             var lo_dataParametros = await context.Repositories.HelperRepository.ObtenerParametrosNetSuitePlus(new Ent_Param_Ns_Param_Filtro
             {
@@ -43,15 +43,15 @@ namespace Service
 
             if (string.IsNullOrEmpty(lo_dataParametros.query))
             {
-                return lo_lista;
+                return null;
             }
 
             var lo_modelo_query = new { q = lo_dataParametros.query };
-            var lo_rpta_query = await Netsuite.Generate_QueryGeneral(lo_modelo_query, lo_token.Token, oClass.pagina, oClass.filas);
+            var lo_rpta_query = await Netsuite.Generate_QueryGeneralPlus(lo_modelo_query, lo_token.Token, oClass.pagina, oClass.filas);
 
             if (!lo_rpta_query.IsSuccessful)
             {
-                return lo_lista;
+                return null;
             }
 
             var options = new JsonSerializerOptions()
@@ -63,7 +63,7 @@ namespace Service
             var ls_json = Convert.ToString(lo_rpta_query.Data);
             var lo_rpta = System.Text.Json.JsonSerializer.Deserialize<Ent_Netsuite_Api_Response>(ls_json, options);
         
-            return lo_rpta.Data;
+            return lo_rpta;
         }
 
         public async Task<List<Ent_Generico>> GetAlmacenNetsuite(Ent_Auditoria oClass)

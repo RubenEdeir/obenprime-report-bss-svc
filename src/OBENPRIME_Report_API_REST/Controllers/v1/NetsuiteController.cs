@@ -14,6 +14,7 @@ public class NetsuiteController : ControllerBase
 	private readonly INetsuiteService _service;
 	private readonly IMapper _mapper;
     private readonly MetodosExcel _metodoExcel;
+
     public NetsuiteController(INetsuiteService NetsuiteService, IMapper mapper, MetodosExcel metodosExcel)
 	{
 		_service = NetsuiteService;
@@ -29,10 +30,10 @@ public class NetsuiteController : ControllerBase
             if (oClass is null) return new DTO_Response<object> { Data = { }, ErrorMessage = "Datos nulos", IsSuccessful = false };
 
             var lo_filtro = _mapper.Map<Ent_Netsuite_Filtro>(oClass);
-            var lo_lista = await _service.GetReporteNetsuite(lo_filtro);
-            var lo_lista_dto = _mapper.Map<List<DTO_Netsuite>>(lo_lista);
+            var lo_ent = await _service.GetReporteNetsuite(lo_filtro);
+            var lo_ent_dto = _mapper.Map<DTO_Netsuite_Response>(lo_ent);
 
-            return new DTO_Response<object> { Data = lo_lista_dto, IsSuccessful = true };
+            return new DTO_Response<object> { Data = lo_ent_dto, IsSuccessful = true };
 
         }
         catch (Exception err)
