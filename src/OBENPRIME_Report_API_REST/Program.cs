@@ -13,7 +13,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowOrigin",
         builder => builder
-            .WithOrigins("http://localhost:5173", "https://obenprime-dev.com", "https://obenprime.com", "https://ohgmiddleware.com", "http://172.168.20.3:8088", "http://172.168.20.3", "172.168.20.3", "https://webcmms.obenprime-dev.com")
+            .WithOrigins("http://localhost:5173", "https://obenprime-dev.com", "https://obenprime-qa.com", "https://obenprime.com", "https://ohgmiddleware.com", "http://172.168.20.3:8088", "http://172.168.20.3", "172.168.20.3", "https://webcmms.obenprime-dev.com")
             .AllowAnyMethod()
             .AllowAnyHeader()
             .AllowCredentials());
