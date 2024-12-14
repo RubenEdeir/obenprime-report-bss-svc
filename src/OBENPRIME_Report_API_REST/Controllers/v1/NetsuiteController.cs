@@ -31,7 +31,7 @@ public class NetsuiteController : ControllerBase
 
             var lo_filtro = _mapper.Map<Ent_Netsuite_Filtro>(oClass);
             var lo_ent = await _service.GetReporteNetsuite(lo_filtro);
-            var lo_ent_dto = _mapper.Map<DTO_Netsuite_Response>(lo_ent);
+            var lo_ent_dto = _mapper.Map<List<DTO_Netsuite>>(lo_ent);
 
             return new DTO_Response<object> { Data = lo_ent_dto, IsSuccessful = true };
 
