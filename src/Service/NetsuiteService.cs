@@ -10,7 +10,7 @@ namespace Service
 {
     public interface INetsuiteService
     {
-        Task<Ent_Netsuite_Api_Response> GetReporteNetsuite(Ent_Netsuite_Filtro oClass);
+        Task<List<Ent_Netsuite>> GetReporteNetsuite(Ent_Netsuite_Filtro oClass);
         Task<List<Ent_Generico>> GetAlmacenNetsuite(Ent_Auditoria oClass);
     }
 
@@ -22,11 +22,14 @@ namespace Service
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<Ent_Netsuite_Api_Response> GetReporteNetsuite(Ent_Netsuite_Filtro oClass)
+        public async Task<List<Ent_Netsuite>> GetReporteNetsuite(Ent_Netsuite_Filtro oClass)
         {
             using var context = _unitOfWork.Create();
             var lo_token = await context.Repositories.HelperRepository.ObtenerToken("NetSuite");
             Ent_Netsuite_Api_Response lo_entidad = new Ent_Netsuite_Api_Response();
+            List<Ent_Netsuite> lo_return_lista = new List<Ent_Netsuite>();
+            int li_vuelta = 1;
+            bool lb_repetir = false;
 
             var lo_dataParametros = await context.Repositories.HelperRepository.ObtenerParametrosNetSuitePlus(new Ent_Param_Ns_Param_Filtro
             {
@@ -62,8 +65,27 @@ namespace Service
 
             var ls_json = Convert.ToString(lo_rpta_query.Data);
             var lo_rpta = System.Text.Json.JsonSerializer.Deserialize<Ent_Netsuite_Api_Response>(ls_json, options);
-        
-            return lo_rpta;
+
+            lo_return_lista.AddRange(lo_rpta.Data);
+            lb_repetir = lo_rpta.HasMore;
+
+            while (lb_repetir)
+            {
+                lo_rpta_query = await Netsuite.Generate_QueryGeneralPlus(lo_modelo_query, lo_token.Token, li_vuelta * 1000, oClass.filas);
+                li_vuelta++;
+
+                if (!lo_rpta_query.IsSuccessful)
+                {
+                    break;
+                }
+
+                ls_json = Convert.ToString(lo_rpta_query.Data);
+                lo_rpta = System.Text.Json.JsonSerializer.Deserialize<Ent_Netsuite_Api_Response>(ls_json, options);
+                lo_return_lista.AddRange(lo_rpta.Data);
+                lb_repetir = lo_rpta.HasMore;
+            }
+           
+            return lo_return_lista;
         }
 
         public async Task<List<Ent_Generico>> GetAlmacenNetsuite(Ent_Auditoria oClass)
